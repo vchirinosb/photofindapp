@@ -21,7 +21,8 @@ class PhotoTile extends StatelessWidget {
         final result = await Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => PhotoDetailScreen(photo: photo, isFavorite: isFavorite),
+            builder: (context) =>
+                PhotoDetailScreen(photo: photo, isFavorite: isFavorite),
           ),
         );
 
@@ -51,7 +52,6 @@ class PhotoTile extends StatelessWidget {
               },
             ),
           ),
-
           Positioned(
             bottom: 8,
             right: 8,

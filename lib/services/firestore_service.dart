@@ -4,7 +4,6 @@ import 'package:photofindapp/models/photo_model.dart';
 class FirestoreService {
   final FirebaseFirestore _db = FirebaseFirestore.instance;
 
-  // Save favorite photo
   Future<void> saveFavoritePhoto(String userId, PhotoModel photo) async {
     await _db.collection('favorites').add({
       'userId': userId,
@@ -14,7 +13,6 @@ class FirestoreService {
     });
   }
 
-  // Fetch favorite photos for a user
   Future<List<PhotoModel>> fetchFavoritePhotos(String userId) async {
     final querySnapshot = await _db
         .collection('favorites')
