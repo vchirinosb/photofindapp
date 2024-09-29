@@ -6,6 +6,7 @@ import 'package:photofindapp/services/api_services.dart';
 import 'package:photofindapp/services/firestore_service.dart';
 import 'package:photofindapp/widgets/photo_service_dropdown.dart';
 import 'package:photofindapp/widgets/photo_tile.dart';
+import 'package:toastification/toastification.dart';
 
 class PhotoSearchScreen extends StatefulWidget {
   const PhotoSearchScreen({super.key});
@@ -15,13 +16,13 @@ class PhotoSearchScreen extends StatefulWidget {
 }
 
 class PhotoSearchScreenState extends State<PhotoSearchScreen> {
-  final ApiService _apiService = ApiService();
+  late final ApiService _apiService;
   final FirestoreService _firestoreService = FirestoreService();
   final List<PhotoModel> _photos = [];
   int _page = 1;
   bool _isLoading = false;
   bool _isFetchingMore = false;
-  String _selectedService = 'Unsplash';
+  String _selectedService = 'Unsplash'; // Default selected service
   String _searchQuery = '';
   final TextEditingController _searchController = TextEditingController();
   final Logger _logger = Logger();
@@ -30,6 +31,7 @@ class PhotoSearchScreenState extends State<PhotoSearchScreen> {
   @override
   void initState() {
     super.initState();
+    _apiService = ApiService(context);
     _scrollController.addListener(_onScroll);
   }
 
@@ -70,15 +72,35 @@ class PhotoSearchScreenState extends State<PhotoSearchScreen> {
           break;
       }
 
-      setState(() {
-        _photos.addAll(photos);
-      });
+      if (mounted) {
+        setState(() {
+          _photos.addAll(photos);
+        });
+
+        toastification.show(
+          context: context,
+          type: ToastificationType.success,
+          title: const Text('Photos Loaded'),
+          description: Text('${photos.length} photos loaded successfully!'),
+        );
+      }
     } catch (e) {
       _logger.e('Error fetching photos: $e');
+
+      if (mounted) {
+        toastification.show(
+          context: context,
+          type: ToastificationType.error,
+          title: const Text('Error'),
+          description: const Text('Failed to load photos.'),
+        );
+      }
     } finally {
-      setState(() {
-        _isLoading = false;
-      });
+      if (mounted) {
+        setState(() {
+          _isLoading = false;
+        });
+      }
     }
   }
 
@@ -109,28 +131,61 @@ class PhotoSearchScreenState extends State<PhotoSearchScreen> {
           break;
       }
 
-      setState(() {
-        _photos.addAll(morePhotos);
-      });
+      if (mounted) {
+        setState(() {
+          _photos.addAll(morePhotos);
+        });
+
+        // Show a success toast only if the widget is still mounted
+        toastification.show(
+          context: context,
+          type: ToastificationType.success,
+          title: const Text('More Photos Loaded'),
+          description:
+              Text('${morePhotos.length} more photos loaded successfully!'),
+        );
+      }
     } catch (e) {
       _logger.e('Error loading more photos: $e');
+
+      if (mounted) {
+        toastification.show(
+          context: context,
+          type: ToastificationType.error,
+          title: const Text('Error'),
+          description: const Text('Failed to load more photos.'),
+        );
+      }
     } finally {
-      setState(() {
-        _isFetchingMore = false;
-      });
+      if (mounted) {
+        setState(() {
+          _isFetchingMore = false;
+        });
+      }
     }
   }
 
   void _saveFavorite(PhotoModel photo) async {
     if (photo.id.isNotEmpty) {
-      final userId =
-          FirebaseFirestore.instance.collection('users').doc(photo.id).id;
+      final userId = FirebaseFirestore.instance.collection('users').doc().id;
 
       await _firestoreService.saveFavoritePhoto(userId, photo);
 
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Added to favorites!')),
+        toastification.show(
+          context: context,
+          type: ToastificationType.success,
+          title: const Text('Added to Favorites'),
+          description: Text('Photo "${photo.title}" added to favorites!'),
+        );
+      }
+    } else {
+      if (mounted) {
+        toastification.show(
+          context: context,
+          type: ToastificationType.error,
+          title: const Text('Error'),
+          description: const Text('Failed to add photo to favorites.'),
         );
       }
     }
@@ -147,6 +202,7 @@ class PhotoSearchScreenState extends State<PhotoSearchScreen> {
         child: Column(
           children: [
             PhotoServiceDropdown(
+              value: _selectedService,
               onChanged: (value) {
                 setState(() {
                   _selectedService = value!;
