@@ -1,8 +1,13 @@
 class PhotoModel {
   final String id;
   final String imageUrl;
-  final String photographer;
+  final String? title;
+  final String? photographerName;
 
-  PhotoModel(
-      {required this.id, required this.imageUrl, required this.photographer});
+  PhotoModel({
+    required this.id,
+    required this.imageUrl,
+    this.title,
+    this.photographerName,
+  });
 }

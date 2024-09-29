@@ -1,6 +1,6 @@
 # photofindapp
 
-A new Flutter project.
+Flutter project to get images from different sources like Unsplash, Pexels and Pixabay.
 
 ## Getting Started
 

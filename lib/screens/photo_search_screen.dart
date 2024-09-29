@@ -25,12 +25,33 @@ class PhotoSearchScreenState extends State<PhotoSearchScreen> {
   String _searchQuery = '';
   final TextEditingController _searchController = TextEditingController();
   final Logger _logger = Logger();
+  final ScrollController _scrollController = ScrollController();
+
+  @override
+  void initState() {
+    super.initState();
+    _scrollController.addListener(_onScroll);
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+  void _onScroll() {
+    if (_scrollController.position.pixels ==
+            _scrollController.position.maxScrollExtent &&
+        !_isFetchingMore) {
+      _loadMorePhotos();
+    }
+  }
 
   void _searchPhotos() async {
     setState(() {
       _isLoading = true;
       _photos.clear();
-      _page = 1; // Reset page
+      _page = 1;
     });
 
     try {
@@ -62,7 +83,7 @@ class PhotoSearchScreenState extends State<PhotoSearchScreen> {
   }
 
   void _loadMorePhotos() async {
-    if (_isFetchingMore) return;
+    if (_isFetchingMore || _isLoading) return;
 
     setState(() {
       _isFetchingMore = true;
@@ -147,29 +168,27 @@ class PhotoSearchScreenState extends State<PhotoSearchScreen> {
             ),
             if (_isLoading) const Center(child: CircularProgressIndicator()),
             Expanded(
-              child: NotificationListener<ScrollNotification>(
-                onNotification: (ScrollNotification scrollInfo) {
-                  if (!scrollInfo.metrics.atEdge &&
-                      scrollInfo.metrics.pixels ==
-                          scrollInfo.metrics.maxScrollExtent) {
-                    _loadMorePhotos();
-                    return true;
-                  }
-                  return false;
-                },
-                child: GridView.builder(
-                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 2,
-                    childAspectRatio: 1,
-                    crossAxisSpacing: 8,
-                    mainAxisSpacing: 8,
-                  ),
-                  itemCount: _photos.length,
-                  itemBuilder: (context, index) {
-                    final photo = _photos[index];
-                    return PhotoTile(photo: photo, onFavorite: _saveFavorite);
-                  },
+              child: GridView.builder(
+                controller:
+                    _scrollController, // Attach ScrollController to GridView
+                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 2,
+                  childAspectRatio: 1,
+                  crossAxisSpacing: 8,
+                  mainAxisSpacing: 8,
                 ),
+                itemCount: _photos.length + (_isFetchingMore ? 1 : 0),
+                itemBuilder: (context, index) {
+                  if (index == _photos.length) {
+                    return const Center(child: CircularProgressIndicator());
+                  }
+                  final photo = _photos[index];
+                  return PhotoTile(
+                    photo: photo,
+                    onFavorite: _saveFavorite,
+                    isFavorite: false,
+                  );
+                },
               ),
             ),
           ],

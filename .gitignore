@@ -97,3 +97,6 @@ macos/Flutter/ephemeral/
 firebase-debug.log
 .firebaserc
 firebase_options.dart
+
+# Flutter .env
+*.env

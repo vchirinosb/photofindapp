@@ -9,7 +9,7 @@ class FirestoreService {
     await _db.collection('favorites').add({
       'userId': userId,
       'imageUrl': photo.imageUrl,
-      'photographer': photo.photographer,
+      'photographer': photo.photographerName,
       'timestamp': FieldValue.serverTimestamp(),
     });
   }
@@ -24,8 +24,27 @@ class FirestoreService {
       return PhotoModel(
         id: doc.id,
         imageUrl: doc['imageUrl'],
-        photographer: doc['photographer'],
+        photographerName: doc['photographer'],
       );
     }).toList();
+  }
+
+  Future<void> removeFavoritePhoto(String userId, String photoId) async {
+    await _db
+        .collection('users')
+        .doc(userId)
+        .collection('favorites')
+        .doc(photoId)
+        .delete();
+  }
+
+  Future<bool> isFavoritePhoto(String userId, String photoId) async {
+    final doc = await _db
+        .collection('users')
+        .doc(userId)
+        .collection('favorites')
+        .doc(photoId)
+        .get();
+    return doc.exists;
   }
 }

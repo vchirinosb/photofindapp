@@ -1,11 +1,12 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:photofindapp/models/photo_model.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 class ApiService {
-  final String unsplashAccessKey = 'YOUR_UNSPLASH_ACCESS_KEY';
-  final String pexelsAccessKey = 'YOUR_PEXELS_ACCESS_KEY';
-  final String pixabayAccessKey = 'YOUR_PIXABAY_ACCESS_KEY';
+  final String unsplashAccessKey = dotenv.env['UNSPLASH_ACCESS_KEY'] ?? '';
+  final String pexelsAccessKey = dotenv.env['PEXELS_ACCESS_KEY'] ?? '';
+  final String pixabayAccessKey = dotenv.env['PIXABAY_ACCESS_KEY'] ?? '';
 
   Future<List<PhotoModel>> searchUnsplash(String query, {int page = 1}) async {
     final url = Uri.parse(
@@ -18,7 +19,7 @@ class ApiService {
           .map((item) => PhotoModel(
                 id: item['id'],
                 imageUrl: item['urls']['small'],
-                photographer: item['user']['name'],
+                photographerName: item['user']['name'],
               ))
           .toList();
     } else {
@@ -38,7 +39,7 @@ class ApiService {
           .map((item) => PhotoModel(
                 id: item['id'].toString(),
                 imageUrl: item['src']['medium'],
-                photographer: item['photographer'],
+                photographerName: item['photographer'],
               ))
           .toList();
     } else {
@@ -57,7 +58,7 @@ class ApiService {
           .map((item) => PhotoModel(
                 id: item['id'].toString(),
                 imageUrl: item['webformatURL'],
-                photographer: item['user'],
+                photographerName: item['user'],
               ))
           .toList();
     } else {
