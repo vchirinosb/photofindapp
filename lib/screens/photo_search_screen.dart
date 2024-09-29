@@ -22,7 +22,7 @@ class PhotoSearchScreenState extends State<PhotoSearchScreen> {
   int _page = 1;
   bool _isLoading = false;
   bool _isFetchingMore = false;
-  String _selectedService = 'Unsplash'; // Default selected service
+  String _selectedService = 'Unsplash';
   String _searchQuery = '';
   final TextEditingController _searchController = TextEditingController();
   final Logger _logger = Logger();
@@ -136,7 +136,6 @@ class PhotoSearchScreenState extends State<PhotoSearchScreen> {
           _photos.addAll(morePhotos);
         });
 
-        // Show a success toast only if the widget is still mounted
         toastification.show(
           context: context,
           type: ToastificationType.success,
@@ -225,8 +224,7 @@ class PhotoSearchScreenState extends State<PhotoSearchScreen> {
             if (_isLoading) const Center(child: CircularProgressIndicator()),
             Expanded(
               child: GridView.builder(
-                controller:
-                    _scrollController, // Attach ScrollController to GridView
+                controller: _scrollController,
                 gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount: 2,
                   childAspectRatio: 1,
