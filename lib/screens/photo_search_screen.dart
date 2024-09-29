@@ -1,5 +1,6 @@
-import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:logger/logger.dart';
 import 'package:photofindapp/models/photo_model.dart';
 import 'package:photofindapp/services/api_services.dart';
@@ -223,26 +224,41 @@ class PhotoSearchScreenState extends State<PhotoSearchScreen> {
             ),
             if (_isLoading) const Center(child: CircularProgressIndicator()),
             Expanded(
-              child: GridView.builder(
-                controller: _scrollController,
-                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 2,
-                  childAspectRatio: 1,
-                  crossAxisSpacing: 8,
-                  mainAxisSpacing: 8,
-                ),
-                itemCount: _photos.length + (_isFetchingMore ? 1 : 0),
-                itemBuilder: (context, index) {
-                  if (index == _photos.length) {
-                    return const Center(child: CircularProgressIndicator());
+              child: NotificationListener<ScrollNotification>(
+                onNotification: (scrollNotification) {
+                  if (scrollNotification is ScrollEndNotification &&
+                      _scrollController.position.pixels ==
+                          _scrollController.position.maxScrollExtent &&
+                      !_isFetchingMore) {
+                    _loadMorePhotos();
                   }
-                  final photo = _photos[index];
-                  return PhotoTile(
-                    photo: photo,
-                    onFavorite: _saveFavorite,
-                    isFavorite: false,
-                  );
+                  return true;
                 },
+                child: SingleChildScrollView(
+                  controller: _scrollController,
+                  child: StaggeredGrid.count(
+                    crossAxisCount: 2,
+                    mainAxisSpacing: 8,
+                    crossAxisSpacing: 8,
+                    children: [
+                      ..._photos.map((photo) {
+                        return StaggeredGridTile.fit(
+                          crossAxisCellCount: 1,
+                          child: PhotoTile(
+                            photo: photo,
+                            onFavorite: _saveFavorite,
+                            isFavorite: false,
+                          ),
+                        );
+                      }),
+                      if (_isFetchingMore)
+                        const StaggeredGridTile.fit(
+                          crossAxisCellCount: 2,
+                          child: Center(child: CircularProgressIndicator()),
+                        ),
+                    ],
+                  ),
+                ),
               ),
             ),
           ],
