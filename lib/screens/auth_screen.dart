@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:photofindapp/screens/photo_search_screen.dart';
 import 'package:photofindapp/services/auth_service.dart';
+import 'package:toastification/toastification.dart';
 
 class AuthScreen extends StatefulWidget {
   final bool isLogin;
@@ -55,10 +56,10 @@ class AuthScreenState extends State<AuthScreen> {
             );
           }
         } else {
-          _showSnackBar('Error while logging in');
+          _showToast('Error while Log In');
         }
       } on FirebaseAuthException catch (e) {
-        _showSnackBar('Error: ${e.message}');
+        _showToast('Error: ${e.message}');
       } finally {
         setState(() {
           _isLoading = false;
@@ -89,10 +90,10 @@ class AuthScreenState extends State<AuthScreen> {
             );
           }
         } else {
-          _showSnackBar('Error while registering');
+          _showToast('Error while Registering');
         }
       } on FirebaseAuthException catch (e) {
-        _showSnackBar('Error: ${e.message}');
+        _showToast('Error: ${e.message}');
       } finally {
         setState(() {
           _isLoading = false;
@@ -129,13 +130,13 @@ class AuthScreenState extends State<AuthScreen> {
             );
           }
         } else {
-          _showSnackBar('Error logging in with Google');
+          _showToast('Error Log In with Google');
         }
       }
     } on FirebaseAuthException catch (e) {
-      _showSnackBar('Error: ${e.message}');
+      _showToast('Error: ${e.message}');
     } catch (e) {
-      _showSnackBar('Error: ${e.toString()}');
+      _showToast('Error: ${e.toString()}');
     } finally {
       if (mounted) {
         setState(() {
@@ -145,9 +146,12 @@ class AuthScreenState extends State<AuthScreen> {
     }
   }
 
-  void _showSnackBar(String message) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(message)),
+  void _showToast(String message) {
+    toastification.show(
+      context: context,
+      type: ToastificationType.error,
+      title: const Text('Error'),
+      description: Text(message),
     );
   }
 
