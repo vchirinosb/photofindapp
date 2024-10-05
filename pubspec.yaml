@@ -81,7 +81,7 @@ flutter:
   assets:
     - assets/background.jpg
     - assets/icon/
-    - assets/google_logo.png
+    - assets/social/
     - assets/logo.png
     - assets/welcome/
     - .env

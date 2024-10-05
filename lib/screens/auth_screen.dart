@@ -161,30 +161,34 @@ class AuthScreenState extends State<AuthScreen> {
             child: _isLoading
                 ? const Center(child: CircularProgressIndicator())
                 : SingleChildScrollView(
-                    child: Form(
-                      key: _formKey,
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
-                        children: [
-                          const SizedBox(height: 80),
-                          _buildLogo(),
-                          const SizedBox(height: 40),
-                          _buildTabSwitcher(),
-                          const SizedBox(height: 20),
-                          _buildEmailField(),
-                          const SizedBox(height: 20),
-                          _buildPasswordField(),
-                          const SizedBox(height: 20),
-                          _buildAuthButton(),
-                          const SizedBox(height: 20),
-                          _buildSocialLoginSeparator(),
-                          const SizedBox(height: 20),
-                          _buildSocialLoginButtons(),
-                          const SizedBox(height: 10),
-                        ],
-                      ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        const SizedBox(height: 80),
+                        _buildLogo(),
+                        const SizedBox(height: 40),
+                        _buildTabSwitcher(),
+                        const SizedBox(height: 20),
+                        _buildEmailField(),
+                        const SizedBox(height: 20),
+                        _buildPasswordField(),
+                        const SizedBox(height: 20),
+                        _buildSocialLoginSeparator(),
+                        const SizedBox(height: 20),
+                        _buildSocialLoginButtons(),
+                        const SizedBox(height: 10),
+                      ],
                     ),
                   ),
+          ),
+          Align(
+            alignment: Alignment.bottomCenter,
+            child: Padding(
+              padding:
+                  const EdgeInsets.symmetric(horizontal: 16.0, vertical: 20.0),
+              child: _buildAuthButton(),
+            ),
           ),
         ],
       ),
@@ -294,14 +298,18 @@ class AuthScreenState extends State<AuthScreen> {
   }
 
   Widget _buildAuthButton() {
-    return ElevatedButton(
-      onPressed: _isLogin ? _signInWithEmail : _signUpWithEmail,
-      style: ElevatedButton.styleFrom(
-        padding: const EdgeInsets.symmetric(vertical: 15),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-        backgroundColor: Colors.greenAccent,
+    return SizedBox(
+      width: double.infinity,
+      child: ElevatedButton(
+        onPressed: _isLogin ? _signInWithEmail : _signUpWithEmail,
+        style: ElevatedButton.styleFrom(
+          padding: const EdgeInsets.symmetric(vertical: 15),
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+          backgroundColor: Colors.greenAccent,
+        ),
+        child: Text(_isLogin ? 'Log In' : 'Sign Up'),
       ),
-      child: Text(_isLogin ? 'Log In' : 'Sign Up'),
     );
   }
 
@@ -332,13 +340,11 @@ class AuthScreenState extends State<AuthScreen> {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        // _buildSocialLoginButton('assets/apple_logo.png', () {}),
-        // const SizedBox(width: 20),
-        _buildSocialLoginButton('assets/google_logo.png', _signInWithGoogle),
+        _buildSocialLoginButton(
+            'assets/social/google_logo.png', _signInWithGoogle),
         const SizedBox(width: 20),
-        // _buildSocialLoginButton('assets/facebook_logo.png', () {}),
-        // const SizedBox(width: 20),
-        // _buildSocialLoginButton('assets/phone_icon.png', () {}),
+        _buildSocialLoginButton('assets/social/facebook_logo.png', () {}),
+        const SizedBox(width: 20),
       ],
     );
   }
