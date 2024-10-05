@@ -116,41 +116,67 @@ class LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text("Iniciar Sesión")),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: _isLoading
-            ? const Center(child: CircularProgressIndicator())
-            : SingleChildScrollView(
-                child: Form(
-                  key: _formKey,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: [
-                      _buildLogo(),
-                      const SizedBox(height: 20),
-                      _buildEmailField(),
-                      const SizedBox(height: 20),
-                      _buildPasswordField(),
-                      const SizedBox(height: 20),
-                      _buildSignInButton(),
-                      const SizedBox(height: 10),
-                      _buildGoogleSignInButton(),
-                      const SizedBox(height: 20),
-                      _buildSignUpOption(),
-                    ],
-                  ),
-                ),
+      body: Stack(
+        children: [
+          Container(
+            decoration: const BoxDecoration(
+              image: DecorationImage(
+                image: AssetImage('assets/background.jpg'),
+                fit: BoxFit.cover,
               ),
+            ),
+          ),
+          Container(
+            color: Colors.blueGrey.withOpacity(0.5),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: _isLoading
+                ? const Center(child: CircularProgressIndicator())
+                : SingleChildScrollView(
+                    child: Form(
+                      key: _formKey,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: [
+                          const SizedBox(height: 100),
+                          _buildLogo(),
+                          const SizedBox(height: 40),
+                          _buildEmailField(),
+                          const SizedBox(height: 20),
+                          _buildPasswordField(),
+                          const SizedBox(height: 20),
+                          _buildSignInButton(),
+                          const SizedBox(height: 10),
+                          _buildGoogleSignInButton(),
+                          const SizedBox(height: 20),
+                          _buildSignUpOption(),
+                        ],
+                      ),
+                    ),
+                  ),
+          ),
+        ],
       ),
     );
   }
 
   Widget _buildLogo() {
-    return Center(
-      child: Image.asset(
-        'assets/logo.png',
-        height: 100,
+    return const Center(
+      child: Text(
+        'Photo Find',
+        style: TextStyle(
+          fontSize: 32,
+          fontWeight: FontWeight.bold,
+          color: Colors.white,
+          shadows: [
+            Shadow(
+              blurRadius: 10.0,
+              color: Colors.black45,
+              offset: Offset(3.0, 3.0),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -158,18 +184,22 @@ class LoginScreenState extends State<LoginScreen> {
   Widget _buildEmailField() {
     return TextFormField(
       controller: _emailController,
+      style: const TextStyle(color: Colors.white),
       decoration: InputDecoration(
-        labelText: 'Correo electrónico',
+        labelText: 'Email',
+        labelStyle: const TextStyle(color: Colors.white70),
+        filled: true,
+        fillColor: Colors.black.withOpacity(0.3),
         border: OutlineInputBorder(borderRadius: BorderRadius.circular(8.0)),
-        prefixIcon: const Icon(Icons.email),
+        prefixIcon: const Icon(Icons.email, color: Colors.white),
       ),
       keyboardType: TextInputType.emailAddress,
       validator: (value) {
         if (value == null || value.trim().isEmpty) {
-          return 'Ingrese su correo electrónico';
+          return 'Please enter your email';
         }
         if (!RegExp(r'\S+@\S+\.\S+').hasMatch(value.trim())) {
-          return 'Ingrese un correo electrónico válido';
+          return 'Please enter a valid email address';
         }
         return null;
       },
@@ -179,18 +209,22 @@ class LoginScreenState extends State<LoginScreen> {
   Widget _buildPasswordField() {
     return TextFormField(
       controller: _passwordController,
+      style: const TextStyle(color: Colors.white),
       decoration: InputDecoration(
-        labelText: 'Contraseña',
+        labelText: 'Password',
+        labelStyle: const TextStyle(color: Colors.white70),
+        filled: true,
+        fillColor: Colors.black.withOpacity(0.3),
         border: OutlineInputBorder(borderRadius: BorderRadius.circular(8.0)),
-        prefixIcon: const Icon(Icons.lock),
+        prefixIcon: const Icon(Icons.lock, color: Colors.white),
       ),
       obscureText: true,
       validator: (value) {
         if (value == null || value.trim().isEmpty) {
-          return 'Ingrese su contraseña';
+          return 'Please enter your password';
         }
         if (value.trim().length < 6) {
-          return 'La contraseña debe tener al menos 6 caracteres';
+          return 'Password must be at least 6 characters long';
         }
         return null;
       },
@@ -205,8 +239,9 @@ class LoginScreenState extends State<LoginScreen> {
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(10),
         ),
+        backgroundColor: Colors.orange,
       ),
-      child: const Text('Iniciar Sesión'),
+      child: const Text('Log In'),
     );
   }
 
@@ -217,7 +252,7 @@ class LoginScreenState extends State<LoginScreen> {
         'assets/google_logo.png',
         height: 24,
       ),
-      label: const Text('Iniciar con Google'),
+      label: const Text('Sign in with Google'),
       style: ElevatedButton.styleFrom(
         padding: const EdgeInsets.symmetric(vertical: 15),
         backgroundColor: Colors.white,
@@ -238,8 +273,8 @@ class LoginScreenState extends State<LoginScreen> {
         );
       },
       child: const Text(
-        '¿No tienes cuenta? Crear una cuenta',
-        style: TextStyle(color: Colors.blue),
+        'Don’t have an account? Sign Up',
+        style: TextStyle(color: Colors.white),
       ),
     );
   }
