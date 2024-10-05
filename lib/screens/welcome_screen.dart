@@ -1,8 +1,7 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:photofindapp/screens/login_screen.dart';
-import 'package:photofindapp/screens/register_screen.dart';
+import 'package:photofindapp/screens/auth_screen.dart';
 
 class WelcomeScreen extends StatefulWidget {
   const WelcomeScreen({super.key});
@@ -91,7 +90,7 @@ class WelcomeScreenState extends State<WelcomeScreen> {
                       onPressed: () {
                         Navigator.of(context).push(
                           MaterialPageRoute(
-                              builder: (context) => const LoginScreen()),
+                              builder: (context) => const AuthScreen(isLogin: true,)),
                         );
                       },
                       style: ElevatedButton.styleFrom(
@@ -115,7 +114,7 @@ class WelcomeScreenState extends State<WelcomeScreen> {
                       onPressed: () {
                         Navigator.of(context).push(
                           MaterialPageRoute(
-                              builder: (context) => const RegisterScreen()),
+                              builder: (context) => const AuthScreen(isLogin: false,)),
                         );
                       },
                       style: OutlinedButton.styleFrom(
