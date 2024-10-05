@@ -5,13 +5,11 @@ import 'package:logger/logger.dart';
 import 'package:photofindapp/models/photo_model.dart';
 import 'package:photofindapp/services/api_services.dart';
 import 'package:photofindapp/services/firestore_service.dart';
-import 'package:photofindapp/widgets/photo_service_dropdown.dart';
 import 'package:photofindapp/widgets/photo_tile.dart';
 import 'package:toastification/toastification.dart';
 
 class PhotoSearchScreen extends StatefulWidget {
   const PhotoSearchScreen({super.key});
-
   @override
   PhotoSearchScreenState createState() => PhotoSearchScreenState();
 }
@@ -131,19 +129,10 @@ class PhotoSearchScreenState extends State<PhotoSearchScreen> {
               await _apiService.searchUnsplash(_searchQuery, page: _page);
           break;
       }
-
       if (mounted) {
         setState(() {
           _photos.addAll(morePhotos);
         });
-
-        toastification.show(
-          context: context,
-          type: ToastificationType.success,
-          title: const Text('More Photos Loaded'),
-          description:
-              Text('${morePhotos.length} more photos loaded successfully!'),
-        );
       }
     } catch (e) {
       _logger.e('Error loading more photos: $e');
@@ -201,14 +190,7 @@ class PhotoSearchScreenState extends State<PhotoSearchScreen> {
         padding: const EdgeInsets.all(8.0),
         child: Column(
           children: [
-            PhotoServiceDropdown(
-              value: _selectedService,
-              onChanged: (value) {
-                setState(() {
-                  _selectedService = value!;
-                });
-              },
-            ),
+            _buildServiceSwitcher(),
             TextField(
               controller: _searchController,
               decoration: InputDecoration(
@@ -264,6 +246,43 @@ class PhotoSearchScreenState extends State<PhotoSearchScreen> {
           ],
         ),
       ),
+    );
+  }
+
+  Widget _buildServiceSwitcher() {
+    final services = ['Unsplash', 'Pexels', 'Pixabay'];
+
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: List<Widget>.generate(services.length, (index) {
+        return GestureDetector(
+          onTap: () {
+            setState(() {
+              _selectedService = services[index];
+            });
+          },
+          child: Container(
+            padding:
+                const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+            margin: const EdgeInsets.symmetric(horizontal: 4.0),
+            decoration: BoxDecoration(
+              color: _selectedService == services[index]
+                  ? Colors.greenAccent
+                  : Colors.transparent,
+              borderRadius: BorderRadius.circular(20.0),
+            ),
+            child: Text(
+              services[index],
+              style: TextStyle(
+                color: _selectedService == services[index]
+                    ? Colors.white
+                    : Colors.black,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ),
+        );
+      }),
     );
   }
 }
