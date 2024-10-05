@@ -161,24 +161,29 @@ class AuthScreenState extends State<AuthScreen> {
             child: _isLoading
                 ? const Center(child: CircularProgressIndicator())
                 : SingleChildScrollView(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        const SizedBox(height: 80),
-                        _buildLogo(),
-                        const SizedBox(height: 40),
-                        _buildTabSwitcher(),
-                        const SizedBox(height: 20),
-                        _buildEmailField(),
-                        const SizedBox(height: 20),
-                        _buildPasswordField(),
-                        const SizedBox(height: 20),
-                        _buildSocialLoginSeparator(),
-                        const SizedBox(height: 20),
-                        _buildSocialLoginButtons(),
-                        const SizedBox(height: 10),
-                      ],
+                    child: Form(
+                      key: _formKey,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          const SizedBox(height: 80),
+                          _buildLogo(),
+                          const SizedBox(height: 20),
+                          _buildSubtitle(),
+                          const SizedBox(height: 40),
+                          _buildTabSwitcher(),
+                          const SizedBox(height: 20),
+                          _buildEmailField(),
+                          const SizedBox(height: 20),
+                          _buildPasswordField(),
+                          const SizedBox(height: 20),
+                          _buildSocialLoginSeparator(),
+                          const SizedBox(height: 20),
+                          _buildSocialLoginButtons(),
+                          const SizedBox(height: 10),
+                        ],
+                      ),
                     ),
                   ),
           ),
@@ -202,6 +207,30 @@ class AuthScreenState extends State<AuthScreen> {
         height: 120,
         width: 120,
       ),
+    );
+  }
+
+  Widget _buildSubtitle() {
+    return const Column(
+      children: [
+        Text(
+          'Join Us Today',
+          style: TextStyle(
+            fontSize: 24,
+            fontWeight: FontWeight.bold,
+            color: Colors.greenAccent,
+          ),
+        ),
+        SizedBox(height: 8),
+        Text(
+          'Search for stunning visuals created by talented photographers!',
+          textAlign: TextAlign.center,
+          style: TextStyle(
+            fontSize: 16,
+            color: Colors.grey,
+          ),
+        ),
+      ],
     );
   }
 

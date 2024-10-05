@@ -24,7 +24,6 @@ class MyApp extends StatelessWidget {
       title: 'Photo Find',
       theme: ThemeData(primarySwatch: Colors.green),
       home: const WelcomeScreen(),
-      // home: const AuthScreen(),
     );
   }
 }
