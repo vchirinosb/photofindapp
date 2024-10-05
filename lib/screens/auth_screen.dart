@@ -196,11 +196,11 @@ class AuthScreenState extends State<AuthScreen> {
   }
 
   Widget _buildLogo() {
-    return const Center(
-      child: Icon(
-        Icons.person,
-        size: 60,
-        color: Colors.greenAccent,
+    return Center(
+      child: Image.asset(
+        'assets/logo.png',
+        height: 120,
+        width: 120,
       ),
     );
   }
