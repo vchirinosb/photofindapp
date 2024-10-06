@@ -24,6 +24,8 @@ class ApiService {
                 id: item['id'],
                 imageUrl: item['urls']['small'],
                 photographerName: item['user']['name'],
+                title: item['description'] ?? '',
+                sourceImage: 'Unsplash',
               ))
           .toList();
     } else {
@@ -45,6 +47,8 @@ class ApiService {
                 id: item['id'].toString(),
                 imageUrl: item['src']['medium'],
                 photographerName: item['photographer'],
+                title: item['alt'] ?? '',
+                sourceImage: 'Pexels',
               ))
           .toList();
     } else {
@@ -65,6 +69,8 @@ class ApiService {
                 id: item['id'].toString(),
                 imageUrl: item['webformatURL'],
                 photographerName: item['user'],
+                title: item['tags'] ?? '',
+                sourceImage: 'Pixabay',
               ))
           .toList();
     } else {
