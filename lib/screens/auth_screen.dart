@@ -152,6 +152,7 @@ class AuthScreenState extends State<AuthScreen> {
       type: ToastificationType.error,
       title: const Text('Error'),
       description: Text(message),
+      autoCloseDuration: const Duration(seconds: 3),
     );
   }
 
@@ -160,6 +161,12 @@ class AuthScreenState extends State<AuthScreen> {
     return Scaffold(
       body: Stack(
         children: [
+          Positioned.fill(
+            child: Image.asset(
+              'assets/background.jpg',
+              fit: BoxFit.cover,
+            ),
+          ),
           Padding(
             padding: const EdgeInsets.all(16.0),
             child: _isLoading
@@ -222,7 +229,7 @@ class AuthScreenState extends State<AuthScreen> {
           style: TextStyle(
             fontSize: 24,
             fontWeight: FontWeight.bold,
-            color: Colors.greenAccent,
+            color: Color(0xFFF4A460),
           ),
         ),
         SizedBox(height: 8),
@@ -231,7 +238,7 @@ class AuthScreenState extends State<AuthScreen> {
           textAlign: TextAlign.center,
           style: TextStyle(
             fontSize: 16,
-            color: Colors.grey,
+            color: Color(0xFF808080),
           ),
         ),
       ],
@@ -253,7 +260,8 @@ class AuthScreenState extends State<AuthScreen> {
             style: TextStyle(
               fontSize: 20,
               fontWeight: _isLogin ? FontWeight.bold : FontWeight.normal,
-              color: _isLogin ? Colors.greenAccent : Colors.grey,
+              color:
+                  _isLogin ? const Color(0xFFF4A460) : const Color(0xFF808080),
             ),
           ),
         ),
@@ -269,7 +277,8 @@ class AuthScreenState extends State<AuthScreen> {
             style: TextStyle(
               fontSize: 20,
               fontWeight: !_isLogin ? FontWeight.bold : FontWeight.normal,
-              color: !_isLogin ? Colors.greenAccent : Colors.grey,
+              color:
+                  !_isLogin ? const Color(0xFFF4A460) : const Color(0xFF808080),
             ),
           ),
         ),
@@ -283,7 +292,7 @@ class AuthScreenState extends State<AuthScreen> {
       decoration: InputDecoration(
         labelText: 'Email',
         border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
-        prefixIcon: const Icon(Icons.email, color: Colors.greenAccent),
+        prefixIcon: const Icon(Icons.email, color: Color(0xFFF4A460)),
       ),
       keyboardType: TextInputType.emailAddress,
       validator: (value) {
@@ -305,11 +314,11 @@ class AuthScreenState extends State<AuthScreen> {
       decoration: InputDecoration(
         labelText: 'Password',
         border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
-        prefixIcon: const Icon(Icons.lock, color: Colors.greenAccent),
+        prefixIcon: const Icon(Icons.lock, color: Color(0xFFF4A460)),
         suffixIcon: IconButton(
           icon: Icon(
             _obscurePassword ? Icons.visibility : Icons.visibility_off,
-            color: Colors.greenAccent,
+            color: const Color(0xFFF4A460),
           ),
           onPressed: () {
             setState(() {
@@ -339,7 +348,7 @@ class AuthScreenState extends State<AuthScreen> {
           padding: const EdgeInsets.symmetric(vertical: 15),
           shape:
               RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-          backgroundColor: Colors.greenAccent,
+          backgroundColor: const Color(0xFFF4A460),
         ),
         child: Text(_isLogin ? 'Log In' : 'Sign Up'),
       ),
@@ -352,7 +361,7 @@ class AuthScreenState extends State<AuthScreen> {
         Expanded(
           child: Divider(
             thickness: 1,
-            color: Colors.grey,
+            color: Color(0xFF808080),
           ),
         ),
         Padding(
@@ -362,7 +371,7 @@ class AuthScreenState extends State<AuthScreen> {
         Expanded(
           child: Divider(
             thickness: 1,
-            color: Colors.grey,
+            color: Color(0xFF808080),
           ),
         ),
       ],
@@ -387,7 +396,7 @@ class AuthScreenState extends State<AuthScreen> {
       onTap: onPressed,
       child: CircleAvatar(
         radius: 25,
-        backgroundColor: Colors.white,
+        backgroundColor: const Color(0xFFFFFFFF),
         child: Image.asset(
           assetPath,
           height: 30,

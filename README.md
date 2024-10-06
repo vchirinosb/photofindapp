@@ -14,3 +14,11 @@ A few resources to get you started if this is your first Flutter project:
 For help getting started with Flutter development, view the
 [online documentation](https://docs.flutter.dev/), which offers tutorials,
 samples, guidance on mobile development, and a full API reference.
+
+## Palette
+
+- Primary Color: Light Sky Blue (#87CEFA)
+- Secondary Color: Soft Peach (#FFDAB9)
+- Accent Color: Muted Mint Green (#98FF98)
+- Button/Text Highlight: Golden Sand (#F4A460)
+- Background Complement: Soft Lavender (#E6E6FA)

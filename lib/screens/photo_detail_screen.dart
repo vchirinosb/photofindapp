@@ -25,12 +25,13 @@ class PhotoDetailScreenState extends State<PhotoDetailScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.photo.title ?? 'Photo Detail'),
+        backgroundColor: const Color(0xFF87CEFA),
+        title: Text(widget.photo.title ?? 'Photo Details'),
         actions: [
           IconButton(
             icon: Icon(
               isFavorite ? Icons.favorite : Icons.favorite_border,
-              color: isFavorite ? Colors.red : Colors.white,
+              color: isFavorite ? const Color(0xFF98FF98) : Colors.white,
             ),
             onPressed: () {
               setState(() {
@@ -40,45 +41,57 @@ class PhotoDetailScreenState extends State<PhotoDetailScreen> {
           ),
         ],
       ),
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
+      body: Stack(
         children: [
-          Expanded(
-            child: Hero(
-              tag: widget.photo.id,
-              child: Image.network(
-                widget.photo.imageUrl,
-                fit: BoxFit.cover,
-              ),
+          Positioned.fill(
+            child: Image.asset(
+              'assets/background.jpg',
+              fit: BoxFit.cover,
             ),
           ),
-          Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  widget.photo.title ?? 'Untitled',
-                  style: const TextStyle(
-                    fontSize: 24,
-                    fontWeight: FontWeight.bold,
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Expanded(
+                child: Hero(
+                  tag: widget.photo.id,
+                  child: Image.network(
+                    widget.photo.imageUrl,
+                    fit: BoxFit.cover,
                   ),
                 ),
-                const SizedBox(height: 8),
-                Text(
-                  'Photographer: ${widget.photo.photographerName ?? 'Unknown'}',
-                  style: const TextStyle(
-                    fontSize: 16,
-                    color: Colors.grey,
-                  ),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      widget.photo.title ?? 'Untitled',
+                      style: const TextStyle(
+                        fontSize: 24,
+                        fontWeight: FontWeight.bold,
+                        color: Color(0xFFF4A460),
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    Text(
+                      'Photographer: ${widget.photo.photographerName ?? 'Unknown'}',
+                      style: const TextStyle(
+                        fontSize: 16,
+                        color: Color(0xFF808080),
+                      ),
+                    ),
+                  ],
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
         ],
       ),
       floatingActionButton: FloatingActionButton(
-        backgroundColor: isFavorite ? Colors.red : Colors.grey,
+        backgroundColor:
+            isFavorite ? const Color(0xFF98FF98) : const Color(0xFFD3D3D3),
         onPressed: () {
           setState(() {
             isFavorite = !isFavorite;
