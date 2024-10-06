@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:photofindapp/screens/welcome_screen.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'firebase_options.dart';
 
 void main() async {
@@ -21,7 +22,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Photo Find',
+      title: 'Photo Explorer',
       theme: ThemeData(
         primaryColor: const Color(0xFF87CEFA),
         secondaryHeaderColor: const Color(0xFFFFDAB9),
@@ -52,14 +53,14 @@ class MyApp extends StatelessWidget {
           secondary: const Color(0xFF98FF98),
           primary: const Color(0xFF87CEFA),
         ),
-        textTheme: const TextTheme(
-          displayLarge: TextStyle(
-            color: Color(0xFF87CEFA),
+        textTheme: TextTheme(
+          displayLarge: GoogleFonts.raleway(
+            color: const Color(0xFF87CEFA),
             fontSize: 32,
             fontWeight: FontWeight.bold,
           ),
-          bodyLarge: TextStyle(
-            color: Color(0xFF000000),
+          bodyLarge: GoogleFonts.raleway(
+            color: const Color(0xFF000000),
             fontSize: 16,
           ),
         ),
