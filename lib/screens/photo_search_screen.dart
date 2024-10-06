@@ -10,6 +10,7 @@ import 'package:toastification/toastification.dart';
 
 class PhotoSearchScreen extends StatefulWidget {
   const PhotoSearchScreen({super.key});
+
   @override
   PhotoSearchScreenState createState() => PhotoSearchScreenState();
 }
@@ -79,8 +80,9 @@ class PhotoSearchScreenState extends State<PhotoSearchScreen> {
         toastification.show(
           context: context,
           type: ToastificationType.success,
-          title: const Text('Photos Loaded'),
-          description: Text('${photos.length} photos loaded successfully!'),
+          title: const Text('Success!'),
+          description: const Text('Your photos are now loaded and ready!'),
+          autoCloseDuration: const Duration(seconds: 3),
         );
       }
     } catch (e) {
@@ -90,8 +92,9 @@ class PhotoSearchScreenState extends State<PhotoSearchScreen> {
         toastification.show(
           context: context,
           type: ToastificationType.error,
-          title: const Text('Error'),
-          description: const Text('Failed to load photos.'),
+          title: const Text('Oops!'),
+          description: const Text('Something went wrong while loading photos.'),
+          autoCloseDuration: const Duration(seconds: 3),
         );
       }
     } finally {
@@ -129,6 +132,7 @@ class PhotoSearchScreenState extends State<PhotoSearchScreen> {
               await _apiService.searchUnsplash(_searchQuery, page: _page);
           break;
       }
+
       if (mounted) {
         setState(() {
           _photos.addAll(morePhotos);
@@ -143,6 +147,7 @@ class PhotoSearchScreenState extends State<PhotoSearchScreen> {
           type: ToastificationType.error,
           title: const Text('Error'),
           description: const Text('Failed to load more photos.'),
+          autoCloseDuration: const Duration(seconds: 3),
         );
       }
     } finally {
@@ -166,6 +171,7 @@ class PhotoSearchScreenState extends State<PhotoSearchScreen> {
           type: ToastificationType.success,
           title: const Text('Added to Favorites'),
           description: Text('Photo "${photo.title}" added to favorites!'),
+          autoCloseDuration: const Duration(seconds: 3),
         );
       }
     } else {
@@ -175,6 +181,7 @@ class PhotoSearchScreenState extends State<PhotoSearchScreen> {
           type: ToastificationType.error,
           title: const Text('Error'),
           description: const Text('Failed to add photo to favorites.'),
+          autoCloseDuration: const Duration(seconds: 3),
         );
       }
     }
@@ -184,66 +191,67 @@ class PhotoSearchScreenState extends State<PhotoSearchScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Photo Search'),
+        title: const Text('Discover Photos'),
+        backgroundColor: const Color(0xFF87CEFA),
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Column(
-          children: [
-            _buildServiceSwitcher(),
-            TextField(
-              controller: _searchController,
-              decoration: InputDecoration(
-                labelText: 'Search...',
-                suffixIcon: IconButton(
-                  icon: const Icon(Icons.search),
-                  onPressed: () {
-                    _searchQuery = _searchController.text;
-                    _searchPhotos();
+      body: Container(
+        decoration: const BoxDecoration(
+          image: DecorationImage(
+            image: AssetImage('assets/background.jpg'),
+            fit: BoxFit.cover,
+          ),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              _buildServiceSwitcher(),
+              const SizedBox(height: 12),
+              _buildSearchBox(),
+              const SizedBox(height: 12),
+              if (_isLoading) _buildLoader(),
+              const SizedBox(height: 12),
+              Expanded(
+                child: NotificationListener<ScrollNotification>(
+                  onNotification: (scrollNotification) {
+                    if (scrollNotification is ScrollEndNotification &&
+                        _scrollController.position.pixels ==
+                            _scrollController.position.maxScrollExtent &&
+                        !_isFetchingMore) {
+                      _loadMorePhotos();
+                    }
+                    return true;
                   },
-                ),
-              ),
-            ),
-            if (_isLoading) const Center(child: CircularProgressIndicator()),
-            Expanded(
-              child: NotificationListener<ScrollNotification>(
-                onNotification: (scrollNotification) {
-                  if (scrollNotification is ScrollEndNotification &&
-                      _scrollController.position.pixels ==
-                          _scrollController.position.maxScrollExtent &&
-                      !_isFetchingMore) {
-                    _loadMorePhotos();
-                  }
-                  return true;
-                },
-                child: SingleChildScrollView(
-                  controller: _scrollController,
-                  child: StaggeredGrid.count(
-                    crossAxisCount: 2,
-                    mainAxisSpacing: 8,
-                    crossAxisSpacing: 8,
-                    children: [
-                      ..._photos.map((photo) {
-                        return StaggeredGridTile.fit(
-                          crossAxisCellCount: 1,
-                          child: PhotoTile(
-                            photo: photo,
-                            onFavorite: _saveFavorite,
-                            isFavorite: false,
+                  child: SingleChildScrollView(
+                    controller: _scrollController,
+                    child: StaggeredGrid.count(
+                      crossAxisCount: 2,
+                      mainAxisSpacing: 12,
+                      crossAxisSpacing: 12,
+                      children: [
+                        ..._photos.map((photo) {
+                          return StaggeredGridTile.fit(
+                            crossAxisCellCount: 1,
+                            child: PhotoTile(
+                              photo: photo,
+                              onFavorite: _saveFavorite,
+                              isFavorite: false,
+                            ),
+                          );
+                        }),
+                        if (_isFetchingMore)
+                          const StaggeredGridTile.fit(
+                            crossAxisCellCount: 2,
+                            child: Center(child: CircularProgressIndicator()),
                           ),
-                        );
-                      }),
-                      if (_isFetchingMore)
-                        const StaggeredGridTile.fit(
-                          crossAxisCellCount: 2,
-                          child: Center(child: CircularProgressIndicator()),
-                        ),
-                    ],
+                      ],
+                    ),
                   ),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
@@ -263,13 +271,14 @@ class PhotoSearchScreenState extends State<PhotoSearchScreen> {
           },
           child: Container(
             padding:
-                const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+                const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
             margin: const EdgeInsets.symmetric(horizontal: 4.0),
             decoration: BoxDecoration(
               color: _selectedService == services[index]
-                  ? Colors.greenAccent
+                  ? const Color(0xFFF4A460)
                   : Colors.transparent,
               borderRadius: BorderRadius.circular(20.0),
+              border: Border.all(color: const Color(0xFF87CEFA), width: 2),
             ),
             child: Text(
               services[index],
@@ -283,6 +292,37 @@ class PhotoSearchScreenState extends State<PhotoSearchScreen> {
           ),
         );
       }),
+    );
+  }
+
+  Widget _buildSearchBox() {
+    return TextField(
+      controller: _searchController,
+      decoration: InputDecoration(
+        filled: true,
+        fillColor: const Color(0xFFE6E6FA).withOpacity(0.8),
+        labelText: 'Search...',
+        labelStyle: const TextStyle(color: Color(0xFFF4A460)),
+        suffixIcon: IconButton(
+          icon: const Icon(Icons.search, color: Color(0xFFF4A460)),
+          onPressed: () {
+            _searchQuery = _searchController.text;
+            _searchPhotos();
+          },
+        ),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(10.0),
+          borderSide: BorderSide.none,
+        ),
+      ),
+    );
+  }
+
+  Widget _buildLoader() {
+    return const Center(
+      child: CircularProgressIndicator(
+        valueColor: AlwaysStoppedAnimation<Color>(Color(0xFFF4A460)),
+      ),
     );
   }
 }

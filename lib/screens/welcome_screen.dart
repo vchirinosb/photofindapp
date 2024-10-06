@@ -21,117 +21,147 @@ class WelcomeScreenState extends State<WelcomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Column(
+      body: Stack(
         children: [
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: 50.0),
-            child: Text(
-              'Photo Find',
-              style: GoogleFonts.pacifico(
-                fontSize: 36,
-                fontWeight: FontWeight.bold,
-                color: Colors.greenAccent,
-              ),
+          Positioned.fill(
+            child: Image.asset(
+              'assets/background.jpg',
+              fit: BoxFit.cover,
             ),
           ),
-          Expanded(
-            flex: 6,
-            child: CarouselSlider(
-              options: CarouselOptions(
-                height: 200,
-                autoPlay: true,
-                enlargeCenterPage: true,
-                aspectRatio: 16 / 9,
-                viewportFraction: 0.8,
+          Column(
+            children: [
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 50.0),
+                child: Text(
+                  'Photo Find',
+                  style: GoogleFonts.pacifico(
+                    fontSize: 36,
+                    fontWeight: FontWeight.bold,
+                    color: const Color(0xFFF4A460),
+                  ),
+                ),
               ),
-              items: imgList
-                  .map((item) => Center(
-                        child:
-                            Image.asset(item, fit: BoxFit.cover, width: 1000),
-                      ))
-                  .toList(),
-            ),
-          ),
-          Expanded(
-            flex: 4,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Row(
+              Expanded(
+                flex: 6,
+                child: CarouselSlider(
+                  options: CarouselOptions(
+                    height: 200,
+                    autoPlay: true,
+                    enlargeCenterPage: true,
+                    aspectRatio: 16 / 9,
+                    viewportFraction: 0.8,
+                  ),
+                  items: imgList
+                      .map((item) => Center(
+                            child: Image.asset(item,
+                                fit: BoxFit.cover, width: 1000),
+                          ))
+                      .toList(),
+                ),
+              ),
+              Expanded(
+                flex: 4,
+                child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Image.asset('assets/icon/unsplash.png',
-                        width: 60, height: 60),
-                    const SizedBox(width: 50),
-                    Image.asset('assets/icon/pexels.png',
-                        width: 60, height: 60),
-                    const SizedBox(width: 50),
-                    Image.asset('assets/icon/pixabay.png',
-                        width: 33, height: 33),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Image.asset('assets/icon/unsplash.png',
+                            width: 60, height: 60),
+                        const SizedBox(width: 50),
+                        Image.asset('assets/icon/pexels.png',
+                            width: 60, height: 60),
+                        const SizedBox(width: 50),
+                        Image.asset('assets/icon/pixabay.png',
+                            width: 33, height: 33),
+                      ],
+                    ),
+                    const SizedBox(height: 20),
+                    const Text(
+                      'Search Your Favorites',
+                      style: TextStyle(
+                        fontSize: 24,
+                        fontWeight: FontWeight.bold,
+                        color: Color(0xFFF4A460),
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                    const Text(
+                      'Images Today!',
+                      style: TextStyle(
+                        fontSize: 24,
+                        fontWeight: FontWeight.bold,
+                        color: Color(0xFFF4A460),
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                    const SizedBox(height: 20),
+                    SizedBox(
+                      width: double.infinity,
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 40.0),
+                        child: ElevatedButton(
+                          onPressed: () {
+                            Navigator.of(context).push(
+                              MaterialPageRoute(
+                                  builder: (context) => const AuthScreen(
+                                        isLogin: true,
+                                      )),
+                            );
+                          },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: const Color(0xFFF4A460),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(30),
+                            ),
+                            padding: const EdgeInsets.symmetric(vertical: 15),
+                            textStyle: const TextStyle(
+                              fontSize: 18,
+                              color: Color(0xFFF4A460),
+                            ),
+                          ),
+                          child: const Text('Log In'),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 10),
+                    SizedBox(
+                      width: double.infinity,
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 40.0),
+                        child: OutlinedButton(
+                          onPressed: () {
+                            Navigator.of(context).push(
+                              MaterialPageRoute(
+                                  builder: (context) => const AuthScreen(
+                                        isLogin: false,
+                                      )),
+                            );
+                          },
+                          style: OutlinedButton.styleFrom(
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(30),
+                              side: const BorderSide(
+                                color: Color(0xFF98FF98),
+                                width: 2,
+                              ),
+                            ),
+                            padding: const EdgeInsets.symmetric(vertical: 15),
+                            textStyle: const TextStyle(
+                              fontSize: 18,
+                              color: Color(0xFFF4A460),
+                            ),
+                          ),
+                          child: const Text('Sign Up'),
+                        ),
+                      ),
+                    ),
                   ],
                 ),
-                const SizedBox(height: 20),
-                const Text(
-                  'Search Your Favorites',
-                  style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-                  textAlign: TextAlign.center,
-                ),
-                const Text(
-                  'Images Today!',
-                  style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-                  textAlign: TextAlign.center,
-                ),
-                const SizedBox(height: 20),
-                SizedBox(
-                  width: double.infinity,
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 40.0),
-                    child: ElevatedButton(
-                      onPressed: () {
-                        Navigator.of(context).push(
-                          MaterialPageRoute(
-                              builder: (context) => const AuthScreen(isLogin: true,)),
-                        );
-                      },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.greenAccent,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(30),
-                        ),
-                        padding: const EdgeInsets.symmetric(vertical: 15),
-                        textStyle: const TextStyle(fontSize: 18),
-                      ),
-                      child: const Text('Log In'),
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 10),
-                SizedBox(
-                  width: double.infinity,
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 40.0),
-                    child: OutlinedButton(
-                      onPressed: () {
-                        Navigator.of(context).push(
-                          MaterialPageRoute(
-                              builder: (context) => const AuthScreen(isLogin: false,)),
-                        );
-                      },
-                      style: OutlinedButton.styleFrom(
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(30),
-                          side: const BorderSide(
-                              color: Colors.greenAccent, width: 2),
-                        ),
-                        padding: const EdgeInsets.symmetric(vertical: 15),
-                        textStyle: const TextStyle(fontSize: 18),
-                      ),
-                      child: const Text('Sign Up'),
-                    ),
-                  ),
-                ),
-              ],
-            ),
+              ),
+            ],
           ),
         ],
       ),
