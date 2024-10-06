@@ -213,42 +213,56 @@ class PhotoSearchScreenState extends State<PhotoSearchScreen> {
               if (_isLoading) _buildLoader(),
               const SizedBox(height: 12),
               Expanded(
-                child: NotificationListener<ScrollNotification>(
-                  onNotification: (scrollNotification) {
-                    if (scrollNotification is ScrollEndNotification &&
-                        _scrollController.position.pixels ==
-                            _scrollController.position.maxScrollExtent &&
-                        !_isFetchingMore) {
-                      _loadMorePhotos();
-                    }
-                    return true;
-                  },
-                  child: SingleChildScrollView(
-                    controller: _scrollController,
-                    child: StaggeredGrid.count(
-                      crossAxisCount: 2,
-                      mainAxisSpacing: 12,
-                      crossAxisSpacing: 12,
-                      children: [
-                        ..._photos.map((photo) {
-                          return StaggeredGridTile.fit(
-                            crossAxisCellCount: 1,
-                            child: PhotoTile(
-                              photo: photo,
-                              onFavorite: _saveFavorite,
-                              isFavorite: false,
-                            ),
-                          );
-                        }),
-                        if (_isFetchingMore)
-                          const StaggeredGridTile.fit(
-                            crossAxisCellCount: 2,
-                            child: Center(child: CircularProgressIndicator()),
+                child: _photos.isEmpty && !_isLoading
+                    ? const Center(
+                        child: Text(
+                          'Uncover Gorgeous Photo\nInspirations',
+                          style: TextStyle(
+                            fontSize: 20,
+                            fontStyle: FontStyle.italic,
+                            fontWeight: FontWeight.bold,
+                            color: Color(0xFFF4A460),
                           ),
-                      ],
-                    ),
-                  ),
-                ),
+                          textAlign: TextAlign.center,
+                        ),
+                      )
+                    : NotificationListener<ScrollNotification>(
+                        onNotification: (scrollNotification) {
+                          if (scrollNotification is ScrollEndNotification &&
+                              _scrollController.position.pixels ==
+                                  _scrollController.position.maxScrollExtent &&
+                              !_isFetchingMore) {
+                            _loadMorePhotos();
+                          }
+                          return true;
+                        },
+                        child: SingleChildScrollView(
+                          controller: _scrollController,
+                          child: StaggeredGrid.count(
+                            crossAxisCount: 2,
+                            mainAxisSpacing: 12,
+                            crossAxisSpacing: 12,
+                            children: [
+                              ..._photos.map((photo) {
+                                return StaggeredGridTile.fit(
+                                  crossAxisCellCount: 1,
+                                  child: PhotoTile(
+                                    photo: photo,
+                                    onFavorite: _saveFavorite,
+                                    isFavorite: false,
+                                  ),
+                                );
+                              }),
+                              if (_isFetchingMore)
+                                const StaggeredGridTile.fit(
+                                  crossAxisCellCount: 2,
+                                  child: Center(
+                                      child: CircularProgressIndicator()),
+                                ),
+                            ],
+                          ),
+                        ),
+                      ),
               ),
             ],
           ),

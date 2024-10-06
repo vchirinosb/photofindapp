@@ -31,12 +31,12 @@ class WelcomeScreenState extends State<WelcomeScreen> {
           ),
           Column(
             children: [
-              Padding(
-                padding: const EdgeInsets.symmetric(vertical: 50.0),
+              const Padding(padding: EdgeInsets.symmetric(vertical: 30.0)),
+              SizedBox(
                 child: Text(
-                  'Photo Find',
-                  style: GoogleFonts.pacifico(
-                    fontSize: 36,
+                  'Photo Explorer',
+                  style: GoogleFonts.sacramento(
+                    fontSize: 45,
                     fontWeight: FontWeight.bold,
                     color: const Color(0xFFF4A460),
                   ),
