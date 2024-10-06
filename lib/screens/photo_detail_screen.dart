@@ -1,5 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:photofindapp/models/photo_model.dart';
+import 'package:dio/dio.dart';
+import 'package:path_provider/path_provider.dart';
+import 'dart:io';
+import 'package:toastification/toastification.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 class PhotoDetailScreen extends StatefulWidget {
   final PhotoModel photo;
@@ -21,6 +26,71 @@ class PhotoDetailScreenState extends State<PhotoDetailScreen> {
     isFavorite = widget.isFavorite;
   }
 
+  Future<void> _downloadImage(String imageUrl) async {
+    var status = await Permission.storage.request();
+
+    if (status.isGranted) {
+      try {
+        var dio = Dio();
+        var response = await dio.get(
+          imageUrl,
+          options: Options(responseType: ResponseType.bytes),
+        );
+
+        final directory = await getDownloadsDirectory();
+
+        if (directory != null) {
+          String filePath =
+              '${directory.path}/${widget.photo.title ?? 'downloaded_image'}.jpg';
+
+          File file = File(filePath);
+          await file.writeAsBytes(response.data);
+
+          if (mounted) {
+            toastification.show(
+              context: context,
+              type: ToastificationType.success,
+              title: const Text('Success!'),
+              description: const Text('Image downloaded successfully!'),
+              autoCloseDuration: const Duration(seconds: 3),
+            );
+          }
+        } else {
+          if (mounted) {
+            toastification.show(
+              context: context,
+              type: ToastificationType.error,
+              title: const Text('Error!'),
+              description: const Text('Failed to access Downloads directory.'),
+              autoCloseDuration: const Duration(seconds: 3),
+            );
+          }
+        }
+      } catch (e) {
+        if (mounted) {
+          toastification.show(
+            context: context,
+            type: ToastificationType.error,
+            title: const Text('Error!'),
+            description: Text('Failed to download image: $e'),
+            autoCloseDuration: const Duration(seconds: 3),
+          );
+        }
+      }
+    } else {
+      if (mounted) {
+        toastification.show(
+          context: context,
+          type: ToastificationType.warning,
+          title: const Text('Permission Denied'),
+          description:
+              const Text('Please allow storage permission to download images.'),
+          autoCloseDuration: const Duration(seconds: 3),
+        );
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -31,12 +101,20 @@ class PhotoDetailScreenState extends State<PhotoDetailScreen> {
           IconButton(
             icon: Icon(
               isFavorite ? Icons.favorite : Icons.favorite_border,
-              color: isFavorite ? const Color(0xFF98FF98) : Colors.white,
+              color: isFavorite
+                  ? const Color(0xFF98FF98)
+                  : const Color(0xFFD3D3D3),
             ),
             onPressed: () {
               setState(() {
                 isFavorite = !isFavorite;
               });
+            },
+          ),
+          IconButton(
+            icon: const Icon(Icons.download),
+            onPressed: () {
+              _downloadImage(widget.photo.imageUrl);
             },
           ),
         ],
@@ -96,7 +174,6 @@ class PhotoDetailScreenState extends State<PhotoDetailScreen> {
           setState(() {
             isFavorite = !isFavorite;
           });
-          Navigator.pop(context, isFavorite);
         },
         child: Icon(
           isFavorite ? Icons.favorite : Icons.favorite_border,
