@@ -10,6 +10,7 @@ class FirestoreService {
       'imageUrl': photo.imageUrl,
       'photographer': photo.photographerName,
       'timestamp': FieldValue.serverTimestamp(),
+      'sourceImage': photo.sourceImage,
     });
   }
 
@@ -23,6 +24,7 @@ class FirestoreService {
         id: doc.id,
         imageUrl: doc['imageUrl'],
         photographerName: doc['photographer'],
+        sourceImage: doc['sourceImage'],
       );
     }).toList();
   }

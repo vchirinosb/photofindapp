@@ -5,6 +5,8 @@ import 'package:path_provider/path_provider.dart';
 import 'dart:io';
 import 'package:toastification/toastification.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:photofindapp/services/firestore_service.dart';
 
 class PhotoDetailScreen extends StatefulWidget {
   final PhotoModel photo;
@@ -19,6 +21,9 @@ class PhotoDetailScreen extends StatefulWidget {
 
 class PhotoDetailScreenState extends State<PhotoDetailScreen> {
   late bool isFavorite;
+  final FirestoreService _firestoreService = FirestoreService();
+
+  String get userId => FirebaseFirestore.instance.collection('users').doc().id;
 
   @override
   void initState() {
@@ -91,6 +96,45 @@ class PhotoDetailScreenState extends State<PhotoDetailScreen> {
     }
   }
 
+  void _saveFavorite() async {
+    if (isFavorite) {
+      return;
+    }
+
+    await _firestoreService.saveFavoritePhoto(userId, widget.photo);
+
+    if (mounted) {
+      setState(() {
+        isFavorite = true;
+      });
+      toastification.show(
+        context: context,
+        type: ToastificationType.success,
+        title: const Text('Added to Favorites'),
+        description: Text('Photo "${widget.photo.title}" added to favorites!'),
+        autoCloseDuration: const Duration(seconds: 3),
+      );
+    }
+  }
+
+  void _removeFavorite() async {
+    await _firestoreService.removeFavoritePhoto(userId, widget.photo.id);
+
+    if (mounted) {
+      setState(() {
+        isFavorite = false;
+      });
+      toastification.show(
+        context: context,
+        type: ToastificationType.info,
+        title: const Text('Removed from Favorites'),
+        description:
+            Text('Photo "${widget.photo.title}" removed from favorites!'),
+        autoCloseDuration: const Duration(seconds: 3),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -106,9 +150,11 @@ class PhotoDetailScreenState extends State<PhotoDetailScreen> {
                   : const Color(0xFFD3D3D3),
             ),
             onPressed: () {
-              setState(() {
-                isFavorite = !isFavorite;
-              });
+              if (!isFavorite) {
+                _saveFavorite();
+              } else {
+                _removeFavorite();
+              }
             },
           ),
           IconButton(
@@ -171,9 +217,11 @@ class PhotoDetailScreenState extends State<PhotoDetailScreen> {
         backgroundColor:
             isFavorite ? const Color(0xFF98FF98) : const Color(0xFFD3D3D3),
         onPressed: () {
-          setState(() {
-            isFavorite = !isFavorite;
-          });
+          if (!isFavorite) {
+            _saveFavorite();
+          } else {
+            _removeFavorite();
+          }
         },
         child: Icon(
           isFavorite ? Icons.favorite : Icons.favorite_border,
